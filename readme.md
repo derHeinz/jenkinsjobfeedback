@@ -4,3 +4,6 @@ This project is used to communicate to a jenkins instance and poll the status of
 It provides a feedback mechanism to inform about updates of those jobs.
 
 One can use the feedback to trigger actions based on jenkins builds. For example to attach a build lamp or thelike.
+
+Running tests
+python -m job_processor_test

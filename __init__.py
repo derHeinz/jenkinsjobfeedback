@@ -1,3 +1,4 @@
 import jenkins_helper
 import job_update
 import job_processor
+import jenkins_helper

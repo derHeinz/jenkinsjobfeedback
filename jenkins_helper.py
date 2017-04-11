@@ -1,8 +1,7 @@
 import jenkinsapi
 from jenkinsapi.jenkins import Jenkins
 
-
-class JenkinsJobHelper:
+class JenkinsJobHelper(JobHelper):
 	''' This class is the accessor to jenkins. It acually uses jenkinsapi but could use the REST api directly'''
 	
 	def __init__(self, url, username, password):
@@ -18,8 +17,11 @@ class JenkinsJobHelper:
 	def check_job(self, jobname):
 		last_build = self._get_last_build(jobname)
 		if ('SUCCESS' == last_build.get_status()):
-			return True
-		return False
+			return JobState.SUCCESS
+		elif ('UNSTABLE' == last_build.get_status()):
+			return JobState.UNSTABLE
+		elif ('FAILED' == last_build.get_status()):
+			return JobState.FAILED
 		
 	def get_committers(self, jobname):
 		last_build = self._get_last_build(jobname)
