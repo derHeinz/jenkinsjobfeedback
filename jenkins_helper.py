@@ -1,7 +1,7 @@
 import jenkinsapi
 from jenkinsapi.jenkins import Jenkins
 
-class JenkinsJobHelper(JobHelper):
+class JenkinsJobHelper():
 	''' This class is the accessor to jenkins. It acually uses jenkinsapi but could use the REST api directly'''
 	
 	def __init__(self, url, username, password):
