@@ -62,17 +62,12 @@ class JobProcessor(threading.Thread):
 			new_jobstate = self.buildtool.check_job(jobname)
 			old_jobstate = jobst[1]['state']
 			old_number = jobst[1]['number']
-			
-			print(jobname)
-			#print("new: " + new_jobstate)
-			#print("old: " + old_jobstate)
-			
+						
 			committers = self.buildtool.get_committers(jobname)
 			buildnumber = self.buildtool.get_buildnumber(jobname)
 			
 			# if nothing changed -> ok
 			if (old_number == buildnumber):
-				print("oldnumber = number -> continue")
 				self.feedback.no_new_build(jobname)
 				continue
 				

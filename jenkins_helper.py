@@ -17,8 +17,6 @@ class JenkinsJobHelper():
 		
 	def check_job(self, jobname):
 		last_build = self._get_last_build(jobname)
-		print(last_build)
-		print(last_build.get_status())
 		if ('SUCCESS' == last_build.get_status()):
 			return job_state.JobState.SUCCESS
 		elif ('UNSTABLE' == last_build.get_status()):
