@@ -1,12 +1,11 @@
-import job_update
 import json
 import os.path
 import threading
 import time
 
-class JobState:
-	''' Defubes states of the build.'''
-	FAILED, UNSTABLE, SUCCESS = range(3)
+import job_update
+import job_state
+
 
 # filename datafile to write back states
 DATA_FILENAME = 'data.json'
@@ -64,11 +63,16 @@ class JobProcessor(threading.Thread):
 			old_jobstate = jobst[1]['state']
 			old_number = jobst[1]['number']
 			
+			print(jobname)
+			#print("new: " + new_jobstate)
+			#print("old: " + old_jobstate)
+			
 			committers = self.buildtool.get_committers(jobname)
 			buildnumber = self.buildtool.get_buildnumber(jobname)
 			
 			# if nothing changed -> ok
 			if (old_number == buildnumber):
+				print("oldnumber = number -> continue")
 				self.feedback.no_new_build(jobname)
 				continue
 				
@@ -78,39 +82,39 @@ class JobProcessor(threading.Thread):
 				continue
 	
 			# previous build was green
-			if (old_jobstate == JobState.SUCCESS):
-				if (new_jobstate == JobState.SUCCESS):
+			if (old_jobstate == job_state.JobState.SUCCESS):
+				if (new_jobstate == job_state.JobState.SUCCESS):
 					self.feedback.still_green(jobname, committers)
-				elif (new_jobstate == JobState.UNSTABLE):
+				elif (new_jobstate == job_state.JobState.UNSTABLE):
 					self.feedback.green_to_yellow(jobname, committers)
-				elif (new_jobstate == JobState.FAILED):
+				elif (new_jobstate == job_state.JobState.FAILURE):
 					self.feedback.green_to_red(jobname, committers)
 					
 			# preivous build was yellow
-			elif (old_jobstate == JobState.UNSTABLE):
-				if (new_jobstate == JobState.SUCCESS):
+			elif (old_jobstate == job_state.JobState.UNSTABLE):
+				if (new_jobstate == job_state.JobState.SUCCESS):
 					self.feedback.yellow_to_green(jobname, committers)
-				elif (new_jobstate == JobState.UNSTABLE):
+				elif (new_jobstate == job_state.JobState.UNSTABLE):
 					self.feedback.still_yellow(jobname, committers)
-				elif (new_jobstate == JobState.FAILED):
+				elif (new_jobstate == job_state.JobState.FAILURE):
 					self.feedback.yellow_to_red(jobname, committers)
 			
 			# preivous build was red
-			elif (old_jobstate == JobState.FAILED):
-				if (new_jobstate == JobState.SUCCESS):
+			elif (old_jobstate == job_state.JobState.FAILURE):
+				if (new_jobstate == job_state.JobState.SUCCESS):
 					self.feedback.red_to_green(jobname, committers)
-				elif (new_jobstate == JobState.UNSTABLE):
+				elif (new_jobstate == job_state.JobState.UNSTABLE):
 					self.feedback.red_to_yellow(jobname, committers)
-				elif (new_jobstate == JobState.FAILED):
+				elif (new_jobstate == job_state.JobState.FAILURE):
 					self.feedback.still_red(jobname, committers)
 					
 			# preivous build unknown
 			else:
-				if (new_jobstate == JobState.SUCCESS):
+				if (new_jobstate == job_state.JobState.SUCCESS):
 					self.feedback.to_green(jobname, committers)
-				elif (new_jobstate == JobState.UNSTABLE):
+				elif (new_jobstate == job_state.JobState.UNSTABLE):
 					self.feedback.to_yellow(jobname, committers)
-				elif (new_jobstate == JobState.FAILED):
+				elif (new_jobstate == job_state.JobState.FAILURE):
 					self.feedback.to_red(jobname, committers)
 			# update the jobstate
 			self._write_single_jobstate(jobname, buildnumber, new_jobstate)

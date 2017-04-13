@@ -1,5 +1,6 @@
 import jenkinsapi
 from jenkinsapi.jenkins import Jenkins
+import job_state
 
 class JenkinsJobHelper():
 	''' This class is the accessor to jenkins. It acually uses jenkinsapi but could use the REST api directly'''
@@ -16,12 +17,14 @@ class JenkinsJobHelper():
 		
 	def check_job(self, jobname):
 		last_build = self._get_last_build(jobname)
+		print(last_build)
+		print(last_build.get_status())
 		if ('SUCCESS' == last_build.get_status()):
-			return JobState.SUCCESS
+			return job_state.JobState.SUCCESS
 		elif ('UNSTABLE' == last_build.get_status()):
-			return JobState.UNSTABLE
-		elif ('FAILED' == last_build.get_status()):
-			return JobState.FAILED
+			return job_state.JobState.UNSTABLE
+		elif ('FAILURE' == last_build.get_status()):
+			return job_state.JobState.FAILURE
 		
 	def get_committers(self, jobname):
 		last_build = self._get_last_build(jobname)
