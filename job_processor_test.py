@@ -1,6 +1,7 @@
 import unittest
 import job_update
 import job_processor
+import job_state
 
 class TestBuildtool:
 	''' Used to fake the feedback of the buildtool.'''
@@ -57,7 +58,7 @@ class TestJobProcessor(unittest.TestCase):
 				self.state_updated_called = self.state_updated_called + 1
 				
 		feedback = TestFeedback()
-		proc, buildtool = self.prepare_test(None, job_processor.JobState.SUCCESS, feedback)
+		proc, buildtool = self.prepare_test(None, job_state.JobState.SUCCESS, feedback)
 		
 		# check job called and green called
 		proc.check_jobs()
@@ -75,7 +76,7 @@ class TestJobProcessor(unittest.TestCase):
 				self.state_updated_called = self.state_updated_called + 1
 				
 		feedback = TestFeedback()
-		proc, buildtool = self.prepare_test(None, job_processor.JobState.UNSTABLE, feedback)
+		proc, buildtool = self.prepare_test(None, job_state.JobState.UNSTABLE, feedback)
 		
 		# check job called and green called
 		proc.check_jobs()
@@ -93,7 +94,7 @@ class TestJobProcessor(unittest.TestCase):
 				self.state_updated_called = self.state_updated_called + 1
 				
 		feedback = TestFeedback()
-		proc, buildtool = self.prepare_test(None, job_processor.JobState.FAILED, feedback)
+		proc, buildtool = self.prepare_test(None, job_state.JobState.FAILURE, feedback)
 		
 		# check job called and green called
 		proc.check_jobs()
@@ -113,7 +114,7 @@ class TestJobProcessor(unittest.TestCase):
 				self.state_updated_called = self.state_updated_called + 1
 				
 		feedback = TestFeedback()
-		proc, buildtool = self.prepare_test(job_processor.JobState.SUCCESS, job_processor.JobState.SUCCESS, feedback)
+		proc, buildtool = self.prepare_test(job_state.JobState.SUCCESS, job_state.JobState.SUCCESS, feedback)
 		
 		# check job called and green called
 		proc.check_jobs()
@@ -131,7 +132,7 @@ class TestJobProcessor(unittest.TestCase):
 				self.state_updated_called = self.state_updated_called + 1
 				
 		feedback = TestFeedback()
-		proc, buildtool = self.prepare_test(job_processor.JobState.UNSTABLE, job_processor.JobState.SUCCESS, feedback)
+		proc, buildtool = self.prepare_test(job_state.JobState.UNSTABLE, job_state.JobState.SUCCESS, feedback)
 		
 		# check job called and green called
 		proc.check_jobs()
@@ -149,7 +150,7 @@ class TestJobProcessor(unittest.TestCase):
 				self.state_updated_called = self.state_updated_called + 1
 				
 		feedback = TestFeedback()
-		proc, buildtool = self.prepare_test(job_processor.JobState.FAILED, job_processor.JobState.SUCCESS, feedback)
+		proc, buildtool = self.prepare_test(job_state.JobState.FAILURE, job_state.JobState.SUCCESS, feedback)
 		
 		# check job called and green called
 		proc.check_jobs()
@@ -169,7 +170,7 @@ class TestJobProcessor(unittest.TestCase):
 				self.state_updated_called = self.state_updated_called + 1
 				
 		feedback = TestFeedback()
-		proc, buildtool = self.prepare_test(job_processor.JobState.UNSTABLE, job_processor.JobState.UNSTABLE, feedback)
+		proc, buildtool = self.prepare_test(job_state.JobState.UNSTABLE, job_state.JobState.UNSTABLE, feedback)
 		
 		# check job called and green called
 		proc.check_jobs()
@@ -187,7 +188,7 @@ class TestJobProcessor(unittest.TestCase):
 				self.state_updated_called = self.state_updated_called + 1
 				
 		feedback = TestFeedback()
-		proc, buildtool = self.prepare_test(job_processor.JobState.SUCCESS, job_processor.JobState.UNSTABLE, feedback)
+		proc, buildtool = self.prepare_test(job_state.JobState.SUCCESS, job_state.JobState.UNSTABLE, feedback)
 		
 		# check job called and green called
 		proc.check_jobs()
@@ -205,14 +206,14 @@ class TestJobProcessor(unittest.TestCase):
 				self.state_updated_called = self.state_updated_called + 1
 				
 		feedback = TestFeedback()
-		proc, buildtool = self.prepare_test(job_processor.JobState.FAILED, job_processor.JobState.UNSTABLE, feedback)
+		proc, buildtool = self.prepare_test(job_state.JobState.FAILURE, job_state.JobState.UNSTABLE, feedback)
 		
 		# check job called and green called
 		proc.check_jobs()
 		self.assertEquals(1, buildtool.check_job_called)
 		self.assertEquals(1, feedback.state_updated_called)
 		
-	# ------------------- Newstate = FAILED -------------------
+	# ------------------- Newstate = FAILURE -------------------
 		
 	def test_check_jobs_feedback_still_red(self):
 		
@@ -225,7 +226,7 @@ class TestJobProcessor(unittest.TestCase):
 				self.state_updated_called = self.state_updated_called + 1
 				
 		feedback = TestFeedback()
-		proc, buildtool = self.prepare_test(job_processor.JobState.FAILED, job_processor.JobState.FAILED, feedback)
+		proc, buildtool = self.prepare_test(job_state.JobState.FAILURE, job_state.JobState.FAILURE, feedback)
 		
 		# check job called and green called
 		proc.check_jobs()
@@ -243,7 +244,7 @@ class TestJobProcessor(unittest.TestCase):
 				self.state_updated_called = self.state_updated_called + 1
 				
 		feedback = TestFeedback()
-		proc, buildtool = self.prepare_test(job_processor.JobState.SUCCESS, job_processor.JobState.FAILED, feedback)
+		proc, buildtool = self.prepare_test(job_state.JobState.SUCCESS, job_state.JobState.FAILURE, feedback)
 		
 		# check job called and green called
 		proc.check_jobs()
@@ -261,7 +262,7 @@ class TestJobProcessor(unittest.TestCase):
 				self.state_updated_called = self.state_updated_called + 1
 				
 		feedback = TestFeedback()
-		proc, buildtool = self.prepare_test(job_processor.JobState.UNSTABLE, job_processor.JobState.FAILED, feedback)
+		proc, buildtool = self.prepare_test(job_state.JobState.UNSTABLE, job_state.JobState.FAILURE, feedback)
 		
 		# check job called and green called
 		proc.check_jobs()
@@ -280,7 +281,7 @@ class TestJobProcessor(unittest.TestCase):
 				self.committers = authors
 				
 		feedback = TestFeedback()
-		proc, buildtool = self.prepare_test(None, job_processor.JobState.SUCCESS, feedback)
+		proc, buildtool = self.prepare_test(None, job_state.JobState.SUCCESS, feedback)
 		
 		buildtool.get_committers_result = ["bla", "blubb"]
 		
