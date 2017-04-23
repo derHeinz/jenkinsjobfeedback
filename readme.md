@@ -5,5 +5,8 @@ It provides a feedback mechanism to inform about updates of those jobs.
 
 One can use the feedback to trigger actions based on jenkins builds. For example to attach a build lamp or thelike.
 
+Needed libs:
+jenkinsapi
+
 Running tests
 python -m job_processor_test
